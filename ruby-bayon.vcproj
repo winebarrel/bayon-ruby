@@ -333,10 +333,6 @@
 			RelativePath=".\README"
 			>
 		</File>
-		<File
-			RelativePath=".\test.rb"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
