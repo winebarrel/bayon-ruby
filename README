@@ -1,0 +1,41 @@
+= bayon/Ruby
+
+Copyright (c) 2009 SUGAWARA Genki <sgwr_dts@yahoo.co.jp>
+
+== Description
+
+Ruby bindings for bayon.
+
+see {bayon}[http://code.google.com/p/bayon/].
+
+== Install
+
+gem install bayon
+
+== Example
+
+    require 'bayon'
+    
+    docs = Bayon::Documents.new
+    docs.cluster_size_limit = 3
+    docs.add_document('Jacob'   , 'J-POP' => 10, 'J-R&B' => 6, 'Rock' => 4)
+    docs.add_document('Emma'    , 'Jazz' =>  8, 'Reggae'=> 9)
+    docs.add_document('Michael' , 'Classical music' => 4, 'World music' => 4)
+    docs.add_document('Isabella', 'Jazz' => 9, 'Metal' => 2, 'Reggae' => 6)
+    docs.add_document('Ethan'   , 'J-POP' => 4, 'Rock' => 3, 'Hip hop' => 3)
+    docs.add_document('Emily'   , 'Classical music' =>  8, 'Rock' => 1)
+    
+    result = docs.do_clustering
+    #=> [["Emma", "Isabella"], ["Jacob", "Ethan"], ["Michael", "Emily"]]
+    
+    result.each do |labels|
+      puts labels.join(', ')
+    end
+
+== Project Page
+
+http://rubyforge.org/projects/bayon
+
+== Source Code
+
+http://coderepos.org/share/browser/lang/ruby/ruby-bayon
