@@ -167,6 +167,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy &quot;$(OutDir)\bayonext.so&quot; &quot;$(ProjectDir)lib\i386-mswin32&quot;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -320,9 +321,21 @@
 				RelativePath=".\lib\bayon.rb"
 				>
 			</File>
+			<Filter
+				Name="i386-mswin32"
+				>
+				<File
+					RelativePath=".\lib\i386-mswin32\bayonext.so"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath=".\bayon.gemspec"
+			>
+		</File>
+		<File
+			RelativePath=".\COPYING"
 			>
 		</File>
 		<File
