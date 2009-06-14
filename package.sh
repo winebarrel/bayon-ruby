@@ -10,7 +10,7 @@ mkdir work
 cp -r * work 2> /dev/null
 cd work
 
-tar jcf bayon-${VERSION}.tar.bz2 --exclude=.svn README *.gemspec ext doc
+tar jcf bayon-${VERSION}.tar.bz2 --exclude=.svn README COPYING *.gemspec lib/bayon.rb ext doc
 gem build bayon.gemspec
 gem build bayon-mswin32.gemspec
 cp bayon-${VERSION}-x86-mswin32.gem bayon-${VERSION}-mswin32.gem
