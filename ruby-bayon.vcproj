@@ -331,6 +331,10 @@
 			</Filter>
 		</Filter>
 		<File
+			RelativePath=".\bayon-mswin32.gemspec"
+			>
+		</File>
+		<File
 			RelativePath=".\bayon.gemspec"
 			>
 		</File>

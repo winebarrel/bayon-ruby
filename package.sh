@@ -12,8 +12,8 @@ cd work
 
 tar jcf bayon-${VERSION}.tar.bz2 --exclude=.svn README *.gemspec ext doc
 gem build bayon.gemspec
-#gem build bayon-mswin32.gemspec
-#cp bayon-${VERSION}-x86-mswin32.gem bayon-${VERSION}-mswin32.gem
+gem build bayon-mswin32.gemspec
+cp bayon-${VERSION}-x86-mswin32.gem bayon-${VERSION}-mswin32.gem
 
 #rm -rf lib
 #mv lib1.9 lib
