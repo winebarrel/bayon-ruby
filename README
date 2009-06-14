@@ -39,3 +39,13 @@ http://rubyforge.org/projects/bayon
 == Source Code
 
 http://coderepos.org/share/browser/lang/ruby/ruby-bayon
+
+== License
+
+bayon/Ruby is distributed under the GNU General Public License.
+
+see COPYING.
+
+== Requirements
+
+* {bayon - simple and fast clustering tool}[http://code.google.com/p/bayon/]
