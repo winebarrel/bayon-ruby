@@ -15,9 +15,10 @@ gem build bayon.gemspec
 gem build bayon-mswin32.gemspec
 cp bayon-${VERSION}-x86-mswin32.gem bayon-${VERSION}-mswin32.gem
 
-#rm -rf lib
-#mv lib1.9 lib
-#gem build bayon1.9-mswin32.gemspec
+cp lib/*.* lib1.9
+rm -rf lib
+mv lib1.9 lib
+gem build bayon1.9-mswin32.gemspec
 cp *.gem *.tar.bz2 ..
 cd ..
 

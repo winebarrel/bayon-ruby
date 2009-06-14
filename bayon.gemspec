@@ -2,7 +2,7 @@ Gem::Specification.new do |spec|
   spec.name              = 'bayon'
   spec.version           = '0.1.0'
   spec.summary           = 'Ruby bindings for bayon.'
-  spec.files             = Dir.glob('lib/*.*') + Dir.glob('ext/*.*') + %w(README)
+  spec.files             = Dir.glob('lib/*.*') + Dir.glob('ext/*.*') + %w(README COPYING)
   spec.author            = 'winebarrel'
   spec.email             = 'sgwr_dts@yahoo.co.jp'
   spec.homepage          = 'http://bayon.rubyforge.org'

@@ -521,6 +521,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\bayon1.9-mswin32.gemspec"
+			>
+		</File>
+		<File
 			RelativePath=".\COPYING"
 			>
 		</File>

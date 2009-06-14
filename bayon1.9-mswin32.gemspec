@@ -1,5 +1,5 @@
 Gem::Specification.new do |spec|
-  spec.name              = 'bayon'
+  spec.name              = 'bayon1.9'
   spec.version           = '0.1.0'
   spec.platform          = 'mswin32'
   spec.summary           = 'Ruby bindings for bayon.'
