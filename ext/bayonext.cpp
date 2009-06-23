@@ -85,6 +85,8 @@ VALUE CBayonDocument::rb_cBayonDocument = Qnil;
 class CBayonAnalyzer {
   bayon::Analyzer* analyzer_;
 
+  bool output_similairty_point_;
+
   static void free(CBayonAnalyzer *p) {
     if (p->analyzer_) {
       delete p->analyzer_;
@@ -107,6 +109,7 @@ class CBayonAnalyzer {
 
     Data_Get_Struct(self, CBayonAnalyzer, p);
     p->analyzer_ = new bayon::Analyzer;
+    p->output_similairty_point_ = false;
 
     return Qnil;
   }
@@ -144,6 +147,24 @@ class CBayonAnalyzer {
     return Qnil;
   }
 
+  static VALUE set_output_similairty_point(VALUE self, VALUE v_output) {
+    CBayonAnalyzer *p;
+    bool output = false;
+
+    if (TYPE(v_output) == T_TRUE) {
+      output = true;
+    } else if (TYPE(v_output) == T_FALSE) {
+      output = false;
+    } else {
+      rb_raise(rb_eTypeError, "wrong argument type %s (expected boolean value)");
+    }
+
+    Data_Get_Struct(self, CBayonAnalyzer, p);
+    p->output_similairty_point_ = output;
+
+    return Qnil;
+  }
+
   static VALUE do_clustering(VALUE self, VALUE v_method) {
     CBayonAnalyzer *p;
 
@@ -156,18 +177,27 @@ class CBayonAnalyzer {
   }
 
   static VALUE get_next_result(VALUE self) {
+    typedef std::vector< std::pair<bayon::Document *, double> > documents;
     CBayonAnalyzer *p;
     bayon::Cluster cluster;
 
     Data_Get_Struct(self, CBayonAnalyzer, p);
 
     if(p->analyzer_->get_next_result(cluster)) {
-      const std::vector<bayon::Document *> documents = cluster.documents();
-      VALUE docids = rb_ary_new2(documents.size());
+      std::vector< std::pair<bayon::Document *, double> > pairs;
+      cluster.sorted_documents(pairs);
+      VALUE docids = rb_ary_new2(pairs.size());
 
-      for(std::vector<bayon::Document *>::const_iterator i = documents.begin(); i != documents.end(); i++) {
-        bayon::Document* doc = *i;
-        rb_ary_push(docids, LONG2NUM(doc->id()));
+      for(documents::const_iterator i = pairs.begin(); i != pairs.end(); i++) {
+        bayon::Document* doc = i->first;
+        double point = i->second;
+
+        if (p->output_similairty_point_) {
+          VALUE docid_points = rb_ary_new3(2, LONG2NUM(doc->id()), DBL2NUM(point));
+          rb_ary_push(docids, docid_points);
+        } else {
+          rb_ary_push(docids, LONG2NUM(doc->id()));
+        }
       }
 
       return docids;
@@ -185,6 +215,7 @@ public:
     rb_define_method(rb_cBayonAnalyzer, "add_document", __F(&add_document), 1);
     rb_define_method(rb_cBayonAnalyzer, "set_cluster_size_limit", __F(&set_cluster_size_limit), 1);
     rb_define_method(rb_cBayonAnalyzer, "set_eval_limit", __F(&set_eval_limit), 1);
+    rb_define_method(rb_cBayonAnalyzer, "set_output_similairty_point", __F(&set_output_similairty_point), 1);
     rb_define_method(rb_cBayonAnalyzer, "do_clustering", __F(&do_clustering), 1);
     rb_define_method(rb_cBayonAnalyzer, "get_next_result", __F(&get_next_result), 0);
 

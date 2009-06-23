@@ -31,6 +31,15 @@ gem install bayon
     result.each do |labels|
       puts labels.join(', ')
     end
+    
+    docs.output_similairty_point = true
+    result = docs.do_clustering
+    
+    result.each do |label_points|
+      puts label_points.map {|label, point|
+        "#{label}(#{point})"
+      }.join(', ')
+    end
 
 == Project Page
 
