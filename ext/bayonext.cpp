@@ -193,7 +193,7 @@ class CBayonAnalyzer {
         double point = i->second;
 
         if (p->output_similairty_point_) {
-          VALUE docid_points = rb_ary_new3(2, LONG2NUM(doc->id()), DBL2NUM(point));
+          VALUE docid_points = rb_ary_new3(2, LONG2NUM(doc->id()), rb_float_new(point));
           rb_ary_push(docids, docid_points);
         } else {
           rb_ary_push(docids, LONG2NUM(doc->id()));
