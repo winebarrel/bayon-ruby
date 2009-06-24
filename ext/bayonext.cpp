@@ -184,7 +184,7 @@ class CBayonAnalyzer {
     Data_Get_Struct(self, CBayonAnalyzer, p);
 
     if(p->analyzer_->get_next_result(cluster)) {
-      std::vector< std::pair<bayon::Document *, double> > pairs;
+      documents pairs;
       cluster.sorted_documents(pairs);
       VALUE docids = rb_ary_new2(pairs.size());
 
