@@ -194,7 +194,7 @@ double Analyzer::refine_clusters(std::vector<Cluster *> &clusters) {
 #ifndef _WIN32
   double norms[clusters.size()];
 #else
-  double *norms = static_cast<double *>(_alloca(clusters.size()));
+  double *norms = static_cast<double *>(_alloca(sizeof(double) * clusters.size()));
 #endif
   for (size_t i = 0; i < clusters.size(); i++) {
     norms[i] = clusters[i]->composite_vector()->norm();
