@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name              = 'bayon1.9'
-  spec.version           = '0.1.1'
+  spec.version           = '0.1.2'
   spec.platform          = 'mswin32'
   spec.summary           = 'Ruby bindings for bayon.'
   spec.require_paths     = %w(lib lib/i386-mswin32)
