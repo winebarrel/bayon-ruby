@@ -1,15 +1,12 @@
 #ifndef __WIN32_H__
 #define __WIN32_H__
 
+#include <string>
 #include <cfloat>
 #include <cmath>
 
 namespace std {
-  int isnan(double x);
-}
-
-namespace local {
-  double _sqrt(double x);
+  int _isnan(double x);
 }
 
 #endif // __WIN32_H__

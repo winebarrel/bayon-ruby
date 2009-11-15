@@ -64,8 +64,6 @@
 #include "stdint.h"
 #include "win32.h"
 
-#define sqrt(x) local::_sqrt(x)
-
 #endif // _WIN32
 
 #endif // __CONFIG_H__
