@@ -1,7 +1,7 @@
 //
 // Clustering API
 //
-// Copyright(C) 2009  Mizuki Fujisawa <mfujisa@gmail.com>
+// Copyright(C) 2009  Mizuki Fujisawa <fujisawa@bayon.cc>
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #include "cluster.h"
 
 namespace bayon {
-  
+
 /* Get sorted documents in clusters */
 void Cluster::sorted_documents(
   std::vector<std::pair<Document *, double> > &pairs) {
@@ -57,7 +57,7 @@ void Cluster::choose_smartly(size_t ndocs, std::vector<Document *> &docs) {
   init_hash_map(siz, closest);
   if (siz < ndocs) ndocs = siz;
   size_t index, count = 0;
-  
+
   index = myrand(&seed_) % siz; // initial center
   docs.push_back(documents_[index]);
   ++count;
@@ -139,7 +139,7 @@ void Cluster::section(size_t nclusters) {
 /* Do repeated bisection clustering */
 size_t Analyzer::repeated_bisection() {
   Cluster *cluster = new Cluster();
-    cluster->set_seed(seed_);
+  cluster->set_seed(seed_);
   for (size_t i = 0; i < documents_.size(); i++) {
     cluster->add_document(documents_[i]);
   }
@@ -174,7 +174,9 @@ size_t Analyzer::repeated_bisection() {
       refine_clusters(sectioned[i]->sectioned_clusters());
       sectioned[i]->set_sectioned_gain();
       if (sectioned[i]->sectioned_gain() < limit_eval_) {
-        sectioned[i]->composite_vector()->clear();
+        for (size_t j = 0; j < sectioned[i]->sectioned_clusters().size(); j++) {
+          sectioned[i]->sectioned_clusters()[j]->clear();
+        }
       }
       sectioned[i]->composite_vector()->clear();
       que.push(sectioned[i]);
@@ -196,6 +198,7 @@ double Analyzer::refine_clusters(std::vector<Cluster *> &clusters) {
 #else
   double *norms = static_cast<double *>(_alloca(sizeof(double) * clusters.size()));
 #endif
+
   for (size_t i = 0; i < clusters.size(); i++) {
     norms[i] = clusters[i]->composite_vector()->norm();
   }
@@ -220,7 +223,8 @@ double Analyzer::refine_clusters(std::vector<Cluster *> &clusters) {
 
       double value_base = refined_vector_value(
         *clusters[cluster_id]->composite_vector(), *doc->feature(), -1);
-      double norm_base_moved = sqrt(pow(norms[cluster_id], 2) + value_base);
+      double norm_base_moved = pow(norms[cluster_id], 2) + value_base;
+      norm_base_moved = norm_base_moved > 0 ? sqrt(norm_base_moved) : 0.0;
 
       double eval_max = -1.0;
       double norm_max = 0.0;
@@ -229,9 +233,11 @@ double Analyzer::refine_clusters(std::vector<Cluster *> &clusters) {
         if (cluster_id == j) continue;
         double value_target = refined_vector_value(
           *clusters[j]->composite_vector(), *doc->feature(), 1);
-        double norm_target_moved = sqrt(pow(norms[j], 2) + value_target);
+        double norm_target_moved = pow(norms[j], 2) + value_target;
+        norm_target_moved = norm_target_moved > 0 ?
+          sqrt(norm_target_moved) : 0.0;
         double eval_moved = norm_base_moved + norm_target_moved
-                            - (norms[cluster_id] + norms[j]);
+                            - norms[cluster_id] - norms[j];
         if (eval_max < eval_moved) {
           eval_max = eval_moved;
           norm_max = norm_target_moved;
@@ -284,11 +290,8 @@ void  Analyzer::idf() {
   init_hash_map(VECTOR_EMPTY_KEY, df);
   count_df(df);
   size_t ndocs = documents_.size();
-  for (size_t i = 0; i < documents_.size(); i++) {
-    VecHashMap *hmap = documents_[i]->feature()->hash_map();
-    for (VecHashMap::iterator it = hmap->begin(); it != hmap->end(); ++it) {
-      (*hmap)[it->first] = it->second * log((double)ndocs / (df[it->first] + 1));
-    }
+  for (size_t i = 0; i < ndocs; i++) {
+    documents_[i]->idf(df, ndocs);
   }
 }
 

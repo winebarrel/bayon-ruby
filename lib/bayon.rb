@@ -45,7 +45,26 @@ module Bayon
       end
     end
 
+    def delete_document(label)
+      @documents.delete_if {|l, f| l == label }
+    end
+
+    def [](label)
+      label, features = @documents.assoc(label)
+      return features
+    end
+
+    def labels
+      @documents.map {|l, f| l }
+    end
+
+    def clear
+      @documents.clear
+    end
+
     def do_clustering(method = Analyzer::REPEATED_BISECTION)
+      return [] if @documents.empty?
+
       analyzer = Analyzer.new
       analyzer.set_cluster_size_limit(@cluster_size_limit) if @cluster_size_limit
       analyzer.set_eval_limit(@eval_limit) if @eval_limit

@@ -1,7 +1,7 @@
 //
 // Utility functions
 //
-// Copyright(C) 2009  Mizuki Fujisawa <mfujisa@gmail.com>
+// Copyright(C) 2009  Mizuki Fujisawa <fujisawa@bayon.cc>
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-// 
+//
 
 #ifndef BAYON_UTIL_H
 #define BAYON_UTIL_H
@@ -24,6 +24,7 @@
 #include "config.h"
 #endif
 
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
 
@@ -45,20 +46,24 @@
   do { } while (false);
 #endif
 
-/* isnan for win32 */
+/* isnan */
+#ifndef isnan
 #ifdef _WIN32
 #include <cfloat>
 #define isnan(x) _isnan(x)
+#else
+#define isnan(x) (x != x)
+#endif
 #endif
 
 
 /* hash function of string key for __gnu_cxx::hash_map */
-#if !defined(HAVE_GOOGLE_DENSE_HASH_MAP) && defined(HAVE_EXT_HASH_MAP)
+#if (defined(_WIN32) || !defined(HAVE_GOOGLE_DENSE_HASH_MAP)) && defined(HAVE_EXT_HASH_MAP)
 namespace __gnu_cxx {
   template<> struct hash<std::string> {
     size_t operator() (const std::string &x) const {
       return hash<const char *>()(x.c_str());
-    }   
+    }
   };
 }
 #endif
@@ -109,7 +114,7 @@ const std::string DELIMITER("\t");
 template<typename KeyType, typename HashType>
 void init_hash_map(const KeyType &empty_key, HashType &hmap) {
 #ifdef HAVE_GOOGLE_DENSE_HASH_MAP
-  hmap.max_load_factor(static_cast<float>(0.9));
+   hmap.max_load_factor(static_cast<float>(0.9));
   hmap.set_empty_key(empty_key);
 #endif
 }
@@ -174,8 +179,8 @@ class Random {
 
   void set_seed(unsigned int seed) { seed_ = seed; }
   unsigned int operator()(unsigned int max) {
-    double ratio =  static_cast<double>(myrand(&seed_))
-                    / static_cast<double>(RAND_MAX);
+    double ratio = static_cast<double>(myrand(&seed_))
+                   / static_cast<double>(RAND_MAX);
     return static_cast<unsigned int>(ratio * max);
   }
 };

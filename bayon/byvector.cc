@@ -1,7 +1,7 @@
-// 
+//
 // Utilities for vector operation
 //
-// Copyright(C) 2009  Mizuki Fujisawa <mfujisa@gmail.com>
+// Copyright(C) 2009  Mizuki Fujisawa <fujisawa@bayon.cc>
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -146,7 +146,7 @@ double Vector::inner_product(const Vector &vec1, const Vector &vec2) {
     end = vec2.hash_map()->end();
     other = &vec1;
   }
-  
+
   double prod = 0;
   while (it != end) {
     itother = other->hash_map()->find(it->first);
@@ -168,7 +168,7 @@ double Vector::cosine(const Vector &vec1, const Vector &vec2) {
   } else {
     double prod = Vector::inner_product(vec1, vec2);
     result = prod / (norm1 * norm2);
-    return std::isnan(result) ? 0.0 : result;
+    return isnan(result) ? 0.0 : result;
   }
 }
 
@@ -177,13 +177,13 @@ double Vector::jaccard(const Vector &vec1, const Vector &vec2) {
   double norm1 = vec1.norm();
   double norm2 = vec2.norm();
   double prod = Vector::inner_product(vec1, vec2);
-  double denom = norm1 * norm2 - prod;
+  double denom = norm1 + norm2 - prod;
   double result = 0.0;
   if (!denom) {
     return result;
   } else {
     result = prod / denom;
-    return std::isnan(result) ? 0.0 : result;
+    return isnan(result) ? 0.0 : result;
   }
 }
 

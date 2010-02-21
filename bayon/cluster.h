@@ -1,7 +1,7 @@
 //
 // Clustering API
 //
-// Copyright(C) 2009  Mizuki Fujisawa <mfujisa@gmail.com>
+// Copyright(C) 2009  Mizuki Fujisawa <fujisawa@bayon.cc>
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-// 
+//
 
 #ifndef BAYON_CLUSTER_H
 #define BAYON_CLUSTER_H
@@ -42,7 +42,7 @@ typedef long DocumentId;
 
 
 /********************************************************************
- * Typedef
+ * Constants
  *******************************************************************/
 const DocumentId DOC_EMPTY_KEY   = -1;
 
@@ -142,6 +142,16 @@ class Document {
     feature_->clear();
   }
 
+  void idf(const HashMap<VecKey, size_t>::type &df, size_t ndocs) {
+    VecHashMap *hmap = feature()->hash_map();
+    HashMap<VecKey, size_t>::type::const_iterator dit;
+    for (VecHashMap::iterator it = hmap->begin(); it != hmap->end(); ++it) {
+      dit = df.find(it->first);
+      size_t denom = (dit != df.end()) ? dit->second : 1;
+      (*hmap)[it->first] =
+        it->second * log(static_cast<double>(ndocs) / denom);
+    }
+  }
 };
 
 
@@ -184,6 +194,16 @@ class Cluster {
    * seed for random number generator
    */
   unsigned int seed_;
+
+  /**
+   * add the vectors of all documents to composite vector
+   */
+  void set_composite_vector() {
+    composite_.clear();
+    for (size_t i = 0; i < documents_.size(); i++) {
+      composite_.add_vector(*documents_[i]->feature());
+    }
+  }
 
  public:
   Cluster() : sectioned_gain_(0), seed_(DEFAULT_SEED) {
@@ -240,11 +260,9 @@ class Cluster {
    */
   Vector *centroid_vector() {
     if (documents_.size() > 0 && composite_.size() == 0) {
-      for (size_t i = 0; i < documents_.size(); i++) {
-        composite_.add_vector(*documents_[i]->feature());
-      }
+      set_composite_vector();
     }
-    composite_.copy(centroid_);
+    composite_vector()->copy(centroid_);
     centroid_.normalize();
     return &centroid_;
   }
@@ -255,15 +273,6 @@ class Cluster {
    * @return Vector * composite vector
    */
   Vector *composite_vector() {
-    return &composite_;
-  }
-
-  /**
-   * Get composite Vector of the cluster
-   *
-   * @return const Vector * composite vector
-   */
-  const Vector *composite_vector() const {
     return &composite_;
   }
 
@@ -300,6 +309,21 @@ class Cluster {
   }
 
   /**
+   * Remove a document
+   *
+   * @param doc  pointer of document object
+   * @return void
+   */
+  void remove_document(const Document *doc) {
+    for (size_t i = 0; i < documents_.size(); i++) {
+      if (documents_[i]->id() == doc->id()) {
+        remove_document(i);
+        return;
+      }
+    }
+  }
+
+  /**
    * Get sorted documents in clusters by similarity
    * between documents and center (desc order)
    *
@@ -317,7 +341,7 @@ class Cluster {
     if (removed_.size() > 0) {
       std::vector<Document *> docs;
       for (size_t i = 0; i < documents_.size(); i++) {
-        if (!removed_[documents_[i]->id()]) {
+        if (removed_.find(documents_[i]->id()) == removed_.end()) {
           docs.push_back(documents_[i]);
         }
       }
