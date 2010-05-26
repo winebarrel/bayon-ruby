@@ -486,6 +486,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\sparsehash\google\sparsehash\libc_allocator_with_realloc.h"
+						>
+					</File>
+					<File
 						RelativePath=".\sparsehash\google\sparsehash\sparseconfig.h"
 						>
 					</File>
@@ -494,6 +498,22 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="windows"
+				>
+				<File
+					RelativePath=".\sparsehash\windows\config.h"
+					>
+				</File>
+				<File
+					RelativePath=".\sparsehash\windows\port.cc"
+					>
+				</File>
+				<File
+					RelativePath=".\sparsehash\windows\port.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
