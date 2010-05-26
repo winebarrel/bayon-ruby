@@ -36,6 +36,10 @@
 #define __F(f) (reinterpret_cast<VALUE (*)(...)>(f))
 #endif
 
+#ifdef _WIN32
+#define HAVE_GOOGLE_DENSE_HASH_MAP 1
+#endif
+
 extern "C" {
 #ifdef _WIN32
 __declspec(dllexport)
